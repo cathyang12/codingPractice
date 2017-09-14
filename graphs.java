@@ -422,3 +422,291 @@ public boolean isBalanced(BSTNode curr) {
             return checkIdentical(t1.left, t2.left) && checkIdentical(t1.right, t2.right);
         }
     }
+
+
+
+// 98. Validate Binary Search Tree: medium
+    /**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+// web solution
+class Solution {
+    public boolean isValidBST(TreeNode root) {       
+        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+       
+    }
+    
+    public boolean isValidBST(TreeNode root, long minVal, long maxVal) {
+        if (root == null) return true;       
+        if (root.val <= minVal || root.val >= maxVal) return false;
+        return isValidBST(root.left, minVal, root.val) && isValidBST(root.right, root.val, maxVal);
+    }
+}
+
+//web solution: inorder traversal
+class Solution {
+    public boolean isValidBST(TreeNode root) {       
+        if (root == null) return true;
+        
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode pre = null;
+        
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            
+            root = stack.pop();
+            if (pre != null && root.val <= pre.val) return false;
+            pre = root;
+            root = root.right;
+        }
+        
+        return true;
+    }  
+}
+
+
+//102. Binary Tree Level Order Traversal: medium
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+              
+        List<List<Integer>> wrapList = new ArrayList<List<Integer>>();
+        if (root == null) return wrapList;
+       
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.offer(root);
+        int levelSize;
+        
+        while (!queue.isEmpty()) {
+            levelSize = queue.size(); 
+            List<Integer> subList = new ArrayList<Integer>();
+            
+            for (int i=0; i<levelSize; i++) {
+                if (queue.peek().left != null) queue.add(queue.peek().left);
+                if (queue.peek().right != null) queue.add(queue.peek().right);
+                subList.add(queue.poll().val);
+            }  
+            
+            wrapList.add(subList);
+        }
+        
+        return wrapList;
+        
+    }
+}
+
+
+//103. Binary Tree Zigzag Level Order Traversal
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+// my solution
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        
+        if (root == null) return res;
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int levelSize = 0;
+        boolean isForward = true;
+        
+        while (!queue.isEmpty()) {
+            levelSize = queue.size();
+            
+            List<Integer> subList = new ArrayList<Integer>();
+            
+            if (isForward) {
+                for (int i=0; i<levelSize; i++) {
+                    if (queue.peekFirst().left != null) queue.addLast(queue.peekFirst().left);
+                    if (queue.peekFirst().right != null) queue.addLast(queue.peekFirst().right); 
+                    subList.add(queue.pollFirst().val);
+                }
+              
+                isForward = false;
+            } else {
+                 for (int i=levelSize-1; i>=0; i--) {
+                    if (queue.peekLast().right != null) queue.addFirst(queue.peekLast().right);
+                    if (queue.peekLast().left != null) queue.addFirst(queue.peekLast().left); 
+                    subList.add(queue.pollLast().val);
+                }
+               
+                isForward = true;
+            }
+            res.add(subList);          
+        }  
+        
+        return res;
+    }
+}
+
+//106. Construct Binary Tree from Inorder and Postorder Traversal: medium
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+//web solution + retype
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        if (inorder.length == 0 || postorder.length == 0 || inorder.length != postorder.length) {
+            return null;
+        }
+        
+        HashMap<Integer, Integer> record = new HashMap<>();
+        
+        for (int i=0; i<inorder.length; i++) {
+            record.put(inorder[i],i);    
+        }
+        
+        return buildTree(inorder, 0, inorder.length-1, postorder, 0, postorder.length-1, record);
+    }
+    
+    public TreeNode buildTree(int[] inorder, int is, int ie, int[] postorder, int ps, int pe, HashMap<Integer, Integer> record) {
+        if (is > ie || ps > pe) return null;
+        
+        TreeNode root = new TreeNode(postorder[pe]);
+        int ri = record.get(postorder[pe]);
+        
+        TreeNode left = buildTree(inorder, is, ri-1, postorder, ps, ps+ri-is-1, record);
+        TreeNode right = buildTree(inorder, ri+1, ie, postorder, ps+ri-is, pe-1, record);
+        
+        root.left = left;
+        root.right = right;
+        
+        return root;
+    }
+}
+
+//112. Path Sum: easy
+//web solution
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null) return false;
+        
+        if (root.left == null && root.right == null && sum-root.val==0) return true;
+        
+        return hasPathSum(root.left, sum-root.val) || hasPathSum(root.right, sum-root.val);
+    }
+}
+
+//114. Flatten Binary Tree to Linked List: medium
+//web solution
+ public void flatten(TreeNode root) {
+        if (root == null) return;
+        
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        
+        root.left = null;
+        
+        flatten(left);
+        flatten(right);
+        
+        root.right = left;
+        TreeNode cur = root;
+        while (cur.right != null) cur = cur.right;
+        cur.right = right;
+    }
+
+
+//114. Flatten Binary Tree to Linked List: medium
+// Solution 2
+private TreeNode prev = null;
+
+public void flatten(TreeNode root) {
+    if (root == null)
+        return;
+    flatten(root.right);
+    flatten(root.left);
+    root.right = prev;
+    root.left = null;
+    prev = root;
+}
+
+
+//116. Populating Next Right Pointers in Each Node
+/**
+ * Definition for binary tree with next pointer.
+ * public class TreeLinkNode {
+ *     int val;
+ *     TreeLinkNode left, right, next;
+ *     TreeLinkNode(int x) { val = x; }
+ * }
+ */
+//my bfs solution: time: O(n), space O(n)
+public class Solution {
+    public void connect(TreeLinkNode root) {
+        if (root == null) return;
+        
+        Queue<TreeLinkNode> queue = new LinkedList<TreeLinkNode>();
+        queue.add(root);
+        int levelSize = 0;
+        while (!queue.isEmpty()) {
+            levelSize = queue.size();
+            TreeLinkNode curr= null;
+            
+            for (int i=0; i<levelSize; i++) {
+                if (queue.peek().left != null) queue.add(queue.peek().left);
+                if (queue.peek().right != null) queue.add(queue.peek().right);
+                
+                if (curr == null) {
+                    curr = queue.poll();
+                } else {
+                    curr.next = queue.poll(); 
+                    curr = curr.next;
+                }                          
+            }
+            
+            curr.next = null;
+        }       
+    }
+}
+
+
+// web solution
+// Time: O(n) Space: O(1)
+public class Solution {
+    public void connect(TreeLinkNode root) {
+        TreeLinkNode level_start=root;
+        while(level_start!=null){
+            TreeLinkNode cur=level_start;
+            while(cur!=null){
+                if(cur.left!=null) cur.left.next=cur.right;
+                if(cur.right!=null && cur.next!=null) cur.right.next=cur.next.left;
+                
+                cur=cur.next;
+            }
+            level_start=level_start.left;
+        }
+    }
+}

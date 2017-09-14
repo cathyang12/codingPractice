@@ -1,4 +1,24 @@
- 
+//binary search
+int binarySearch(int[] arr, int target) {
+  int low = 0;
+  int high = arr.length-1;
+  int mid;
+
+  while (low <= high) {
+      mid = (high+low)/2;
+      
+      if (arr[mid] < target) {
+          low = mid+1;
+      } else if (arr[mid] > target) {
+          high = mid-1;
+      } else {
+        return mid;
+      }
+  }
+  
+  return -1;
+} 
+
 //10.1 Sorted Merge
  public void merge(int[] a, int[] b, int lastA, int lastB) {
         int indexA = lastA - 1; // Index of last element in array a
@@ -63,7 +83,6 @@
             
         }
         
-        //??? Not sure why need this stmt
         return -1;
    }
 
