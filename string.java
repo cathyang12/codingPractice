@@ -222,3 +222,55 @@ class Solution {
         }
     }
 }
+
+//165. Compare Version Numbers： medium
+class Solution {
+    public int compareVersion(String version1, String version2) {
+        String[] v1 = version1.split("[.]");
+        String[] v2 = version2.split("[.]");
+       
+        int len1 = v1.length;
+        int len2 = v2.length;
+        int length = Math.max(len1, len2);
+        
+              
+        for (int i=0; i<length; i++) {
+            
+            Integer currV1 = i < len1 ? Integer.parseInt(v1[i]) : 0;
+            Integer currV2 = i < len2 ? Integer.parseInt(v2[i]) : 0;
+            
+            int compare = currV1.compareTo(currV2);
+            if (compare != 0) {
+                return compare;
+            }
+        }
+        
+        return 0;
+
+    }   
+    
+}
+
+//3. Longest Substring Without Repeating Characters:medium
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        int len = s.length(), maxlen = 0;
+        if (len < 2) return s.length();
+        
+        for (int i=0; i<len; i++) {
+            HashSet<Character> set = new HashSet<>();
+            for (int j=i; j<len; j++) {
+                if (!set.contains(s.charAt(j))) {
+                    set.add(s.charAt(j));
+                } else {
+                    break;
+                }
+            }
+            
+            maxlen = Math.max(maxlen, set.size());
+        }
+                    
+        return maxlen;
+    }
+}
+

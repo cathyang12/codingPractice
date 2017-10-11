@@ -228,7 +228,7 @@ class Solution {
 
 
 //25. Reverse Nodes in k-Group
-    //my solution: recursive
+//my solution: recursive
 public ListNode reverseKGroup(ListNode head, int k) {
     
     //base case head size is less than k
@@ -266,7 +266,7 @@ public ListNode reverseKGroup(ListNode head, int k) {
 }
 
 
-    // web solution recursive
+// web solution recursive
 public ListNode reverseKGroup(ListNode head, int k) {
     ListNode curr = head;
     int count = 0;
@@ -287,4 +287,87 @@ public ListNode reverseKGroup(ListNode head, int k) {
         head = curr;
     }
     return head;
+}
+
+//geeksforgeeks solution
+ Node reverse(Node head, int k)
+    {
+       Node current = head;
+       Node next = null;
+       Node prev = null;
+        
+       int count = 0;
+ 
+       /* Reverse first k nodes of linked list */
+       while (count < k && current != null) 
+       {
+           next = current.next;
+           current.next = prev;
+           prev = current;
+           current = next;
+           count++;
+       }
+ 
+       /* next is now a pointer to (k+1)th node 
+          Recursively call for the list starting from current.
+          And make rest of the list as next of first node */
+       if (next != null) 
+          head.next = reverse(next, k);
+ 
+       // prev is now head of input list
+       return prev;
+    }                      
+
+//206 reverse linkedList: easy
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) return head;
+        
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode prev = dummy;
+        ListNode curr = head;
+        ListNode next = head.next;
+        
+        while (next!= null) {
+            curr.next = next.next;
+            next.next = prev.next;
+            prev.next = next;
+            
+            next = curr.next;
+        }
+        
+        return dummy.next;
+    }
+}
+
+
+//237. Delete Node in a Linked List: easy
+//my solution
+class Solution {
+    public void deleteNode(ListNode node) {
+        while (node.next != null) {      
+            node.val = node.next.val;         
+            if (node.next.next == null) {
+                break;
+            }
+            node = node.next;
+        }
+        node.next = null;
+        
+    }
+}
+
+//web solution
+public void deleteNode(ListNode node) {
+    node.val = node.next.val;
+    node.next = node.next.next;
 }
